@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Betül & Burak — Nişan Davetiyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&family=Pinyon+Script&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive-deep:#33371f;
+  --olive:#43472a;
+  --olive-flap:#3b3f24;
+  --olive-mid:#5c6138;
+  --sage:#8d9163;
+  --cream:#f3f0e6;
+  --cream-2:#ece7d6;
+  --beige:#ddd0ad;
+  --beige-hi:#efe6cc;
+  --beige-lo:#c3b489;
+  --ink:#2b2e1c;
+  --white:#fbfaf4;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--olive-deep);
+  color:var(--ink);
+  overflow:hidden;
+}
+body.opened{overflow-y:auto;overflow-x:hidden;}
+
+/* subtle paper / fabric grain reused everywhere */
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");}
+
+/* ============ COVER / ENVELOPE ============ */
+#cover{
+  position:fixed;inset:0;z-index:50;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:
+    radial-gradient(120% 80% at 50% 18%, #4a4e2d 0%, var(--olive) 45%, var(--olive-deep) 100%);
+  transition:transform 1.1s cubic-bezier(.7,0,.2,1), opacity 1.1s ease;
+  overflow:hidden;
+}
+#cover.lift{transform:translateY(-105%);opacity:0;}
+
+/* envelope flap (top triangle) */
+.flap{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:200%;height:46%;
+  background:linear-gradient(180deg,#474b2c 0%, var(--olive-flap) 100%);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  box-shadow:0 14px 30px -10px rgba(0,0,0,.45);
+}
+.flap-line{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:200%;height:46%;
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  background:linear-gradient(135deg,transparent 49.6%,rgba(255,255,255,.05) 49.8%,rgba(0,0,0,.18) 50%,transparent 50.4%);
+}
+
+/* lace band sitting along the flap V */
+.lace-wrap{
+  position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);
+  width:135%;max-width:760px;pointer-events:none;
+  z-index:3;opacity:.92;
+}
+.lace-wrap svg{width:100%;height:auto;display:block;
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.28));}
+
+/* names + texts */
+.cover-names{
+  position:relative;z-index:4;text-align:center;margin-top:-4vh;
+}
+.cover-names .amp{
+  font-family:'Pinyon Script',cursive;
+  color:var(--cream);
+  font-size:clamp(56px,17vw,108px);
+  line-height:.9;
+  text-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+.seal-zone{position:relative;z-index:4;margin-top:4vh;cursor:pointer;
+  transition:transform .35s ease;}
+.seal-zone:active{transform:scale(.96);}
+.seal-zone svg{width:clamp(160px,46vw,220px);height:auto;display:block;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.4));
+  animation:breathe 3.6s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.open-text{
+  position:relative;z-index:4;margin-top:5.5vh;
+  font-family:'Cinzel',serif;letter-spacing:.34em;
+  color:var(--cream);font-size:clamp(13px,3.6vw,17px);font-weight:500;
+  text-indent:.34em;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.open-text .chev{width:22px;height:22px;border-left:1.5px solid var(--sage);
+  border-bottom:1.5px solid var(--sage);transform:rotate(-45deg);
+  animation:bob 1.8s ease-in-out infinite;opacity:.85;}
+@keyframes bob{0%,100%{transform:rotate(-45deg) translate(0,0)}50%{transform:rotate(-45deg) translate(-4px,4px)}}
+
+/* ============ INVITATION SHEET ============ */
+#invite{opacity:0;transition:opacity 1s ease .25s;}
+body.opened #invite{opacity:1;}
+
+.card{
+  position:relative;min-height:100vh;
+  background:
+    radial-gradient(140% 100% at 50% 0%, #f6f3ea 0%, var(--cream) 55%, var(--cream-2) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:64px 26px;overflow:hidden;text-align:center;
+}
+.bg-date{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  color:rgba(92,97,56,.13);line-height:.92;
+  font-size:clamp(120px,34vw,210px);letter-spacing:.02em;
+  user-select:none;pointer-events:none;z-index:0;
+}
+.card-inner{position:relative;z-index:2;width:100%;max-width:430px;}
+
+.names{position:relative;margin:0 auto;}
+.names .nm{
+  font-family:'Sacramento',cursive;color:var(--olive);
+  font-size:clamp(64px,20vw,118px);line-height:.74;display:block;
+}
+.names .nm.b{margin-left:-6%;}
+.names .nm.k{margin-left:14%;}
+.names .ve{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  color:var(--olive-mid);font-size:clamp(20px,5.5vw,28px);
+  display:block;margin:2px 0 2px 4%;letter-spacing:.04em;
+}
+
+.invite-line{
+  margin-top:46px;font-family:'Jost',sans-serif;font-weight:300;
+  color:var(--olive-mid);font-size:clamp(15px,4.4vw,18px);
+  letter-spacing:.06em;line-height:1.6;
+}
+.big-date{
+  margin-top:18px;font-family:'Cormorant Garamond',serif;font-weight:400;
+  color:var(--olive);font-size:clamp(40px,12vw,62px);letter-spacing:.04em;
+}
+.time{
+  margin-top:2px;font-family:'Jost',sans-serif;font-weight:300;
+  color:var(--olive-mid);font-size:clamp(15px,4.4vw,19px);letter-spacing:.28em;
+  text-indent:.28em;
+}
+.divider{width:54px;height:1px;background:var(--sage);opacity:.7;margin:30px auto;}
+.venue{
+  font-family:'Cinzel',serif;font-weight:500;color:var(--olive);
+  font-size:clamp(17px,5vw,22px);letter-spacing:.16em;text-indent:.16em;
+}
+.addr{
+  margin-top:10px;font-family:'Jost',sans-serif;font-weight:300;
+  color:var(--olive-mid);font-size:clamp(13px,3.8vw,15px);
+  letter-spacing:.05em;line-height:1.7;
+}
+
+/* ============ COUNTDOWN ============ */
+.countdown{
+  position:relative;min-height:78vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:70px 26px;text-align:center;
+  background:
+    radial-gradient(130% 90% at 50% 12%, #50552f 0%, var(--olive) 48%, var(--olive-deep) 100%);
+  overflow:hidden;
+}
+.cd-head{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
+  color:var(--cream);font-size:clamp(22px,6vw,30px);line-height:1.5;
+  max-width:440px;margin:0 auto 40px;position:relative;z-index:2;
+}
+.timer{
+  position:relative;z-index:2;display:flex;align-items:flex-start;
+  justify-content:center;gap:clamp(8px,3vw,20px);color:var(--white);
+}
+.unit{display:flex;flex-direction:column;align-items:center;min-width:clamp(52px,16vw,78px);}
+.unit .num{
+  font-family:'Cormorant Garamond',serif;font-weight:400;
+  font-size:clamp(40px,13vw,68px);line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.unit .lbl{
+  margin-top:10px;font-family:'Cinzel',serif;
+  font-size:clamp(9px,2.6vw,12px);letter-spacing:.16em;text-indent:.16em;
+  color:var(--sage);text-transform:uppercase;
+}
+.sep{font-family:'Cormorant Garamond',serif;color:var(--sage);
+  font-size:clamp(34px,11vw,58px);line-height:1.1;padding-top:2px;}
+
+.map-btn{
+  position:relative;z-index:2;margin-top:54px;
+  display:inline-flex;align-items:center;gap:11px;
+  padding:15px 30px;border:1px solid var(--sage);border-radius:40px;
+  color:var(--cream);text-decoration:none;background:rgba(141,145,99,.08);
+  font-family:'Cinzel',serif;font-size:clamp(12px,3.4vw,14px);
+  letter-spacing:.18em;text-indent:.18em;
+  transition:background .3s ease,transform .2s ease;
+  backdrop-filter:blur(2px);
+}
+.map-btn:active{transform:scale(.97);}
+.map-btn svg{width:17px;height:17px;flex:none;}
+.map-addr{
+  position:relative;z-index:2;margin-top:18px;
+  font-family:'Jost',sans-serif;font-weight:300;color:var(--sage);
+  font-size:clamp(12px,3.4vw,13px);letter-spacing:.04em;line-height:1.6;
+  max-width:300px;
+}
+.foot-mono{
+  position:relative;z-index:2;margin-top:46px;
+  font-family:'Pinyon Script',cursive;color:var(--sage);
+  font-size:clamp(40px,12vw,58px);line-height:1;opacity:.9;
+}
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div id="cover" role="button" aria-label="Davetiyeyi aç">
+  <div class="flap"></div>
+  <div class="flap-line"></div>
+  <div class="grain"></div>
+
+  <!-- LACE BAND -->
+  <div class="lace-wrap">
+    <svg viewBox="0 0 800 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <pattern id="net" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <circle cx="11" cy="11" r="1.5" fill="none" stroke="#cfc8a8" stroke-width="0.7" opacity="0.6"/>
+          <circle cx="0" cy="0" r="1.5" fill="none" stroke="#cfc8a8" stroke-width="0.7" opacity="0.6"/>
+        </pattern>
+      </defs>
+      <!-- chevron lace mass dipping in the middle -->
+      <g fill="#d9d2b4" opacity="0.95">
+        <path d="M0,8 L400,118 L800,8 L800,40 L400,150 L0,40 Z"/>
+      </g>
+      <g fill="url(#net)">
+        <path d="M0,8 L400,118 L800,8 L800,40 L400,150 L0,40 Z"/>
+      </g>
+      <!-- scalloped picot edge along lower V -->
+      <g fill="none" stroke="#cfc8a8" stroke-width="2">
+        <path d="M0,40 L400,150 L800,40" />
+      </g>
+      <g fill="#e7e1c7">
+        <!-- left arm scallops -->
+        <circle cx="40" cy="44" r="9"/><circle cx="90" cy="58" r="9"/>
+        <circle cx="140" cy="71" r="9"/><circle cx="190" cy="85" r="9"/>
+        <circle cx="240" cy="98" r="9"/><circle cx="290" cy="112" r="9"/>
+        <circle cx="340" cy="125" r="9"/><circle cx="390" cy="139" r="9"/>
+        <!-- right arm scallops -->
+        <circle cx="760" cy="44" r="9"/><circle cx="710" cy="58" r="9"/>
+        <circle cx="660" cy="71" r="9"/><circle cx="610" cy="85" r="9"/>
+        <circle cx="560" cy="98" r="9"/><circle cx="510" cy="112" r="9"/>
+        <circle cx="460" cy="125" r="9"/><circle cx="410" cy="139" r="9"/>
+      </g>
+      <g fill="#33371f">
+        <circle cx="40" cy="44" r="2.4"/><circle cx="90" cy="58" r="2.4"/>
+        <circle cx="140" cy="71" r="2.4"/><circle cx="190" cy="85" r="2.4"/>
+        <circle cx="240" cy="98" r="2.4"/><circle cx="290" cy="112" r="2.4"/>
+        <circle cx="340" cy="125" r="2.4"/><circle cx="390" cy="139" r="2.4"/>
+        <circle cx="760" cy="44" r="2.4"/><circle cx="710" cy="58" r="2.4"/>
+        <circle cx="660" cy="71" r="2.4"/><circle cx="610" cy="85" r="2.4"/>
+        <circle cx="560" cy="98" r="2.4"/><circle cx="510" cy="112" r="2.4"/>
+        <circle cx="460" cy="125" r="2.4"/><circle cx="410" cy="139" r="2.4"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="cover-names">
+    <span class="amp">Betül &amp; Burak</span>
+  </div>
+
+  <!-- WAX SEAL -->
+  <div class="seal-zone" id="sealBtn">
+    <svg viewBox="0 0 220 270" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="wax" cx="42%" cy="34%" r="72%">
+          <stop offset="0%" stop-color="#efe6cc"/>
+          <stop offset="55%" stop-color="#ddd0ad"/>
+          <stop offset="100%" stop-color="#c3b489"/>
+        </radialGradient>
+        <filter id="emb" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/>
+          <feOffset in="b" dx="0" dy="1.6" result="o"/>
+          <feComponentTransfer in="o" result="sh"><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+          <feMerge><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- organic wax blob -->
+      <path d="M110 6 C150 8 196 30 204 78 C212 124 208 168 196 206
+               C186 240 150 264 110 264 C70 264 33 240 24 206
+               C12 168 8 124 16 78 C24 30 70 4 110 6 Z" fill="url(#wax)"/>
+      <!-- inner pressed frame -->
+      <g filter="url(#emb)" stroke="#a9986e" fill="none" stroke-width="1.6" opacity="0.85">
+        <path d="M110 34 C150 36 178 60 182 100 C186 140 184 180 176 206
+                 C170 226 144 240 110 240 C76 240 50 226 44 206
+                 C36 180 34 140 38 100 C42 60 70 32 110 34 Z"/>
+        <path d="M110 44 C145 46 168 66 172 102 C176 138 174 176 168 200
+                 C162 220 140 232 110 232 C80 232 58 220 52 200
+                 C46 176 44 138 48 102 C52 66 75 42 110 44 Z" stroke-width="1"/>
+      </g>
+      <!-- picot dots around frame -->
+      <g fill="#a9986e" opacity="0.8">
+        <circle cx="110" cy="40" r="2"/><circle cx="150" cy="52" r="2"/>
+        <circle cx="174" cy="86" r="2"/><circle cx="180" cy="130" r="2"/>
+        <circle cx="172" cy="178" r="2"/><circle cx="150" cy="214" r="2"/>
+        <circle cx="110" cy="228" r="2"/><circle cx="70" cy="214" r="2"/>
+        <circle cx="48" cy="178" r="2"/><circle cx="40" cy="130" r="2"/>
+        <circle cx="46" cy="86" r="2"/><circle cx="70" cy="52" r="2"/>
+      </g>
+      <!-- little leaf sprig -->
+      <g filter="url(#emb)" stroke="#a9986e" fill="none" stroke-width="1.7" opacity="0.9">
+        <path d="M110 70 L110 112"/>
+        <path d="M110 84 C102 78 94 80 90 88 C98 92 106 90 110 84 Z" fill="#cdbd92" stroke-width="1"/>
+        <path d="M110 96 C118 90 126 92 130 100 C122 104 114 102 110 96 Z" fill="#cdbd92" stroke-width="1"/>
+        <path d="M110 78 C104 72 98 74 96 80 C102 83 108 82 110 78 Z" fill="#cdbd92" stroke-width="1"/>
+      </g>
+      <!-- monogram -->
+      <text x="110" y="158" text-anchor="middle"
+            font-family="Cinzel, serif" font-size="38" font-weight="600"
+            fill="#9c8b62" filter="url(#emb)" letter-spacing="2">B&#8201;&amp;&#8201;B</text>
+      <text x="110" y="186" text-anchor="middle"
+            font-family="Cinzel, serif" font-size="11" font-weight="500"
+            fill="#a9986e" letter-spacing="3">BETÜL · BURAK</text>
+    </svg>
+  </div>
+
+  <div class="open-text">
+    <span>DAVETİYEYİ AÇ</span>
+    <span class="chev"></span>
+  </div>
+</div>
+
+<!-- ================= INVITATION ================= -->
+<div id="invite">
+  <section class="card">
+    <div class="grain"></div>
+    <div class="bg-date">26<br>07<br>26</div>
+    <div class="card-inner">
+      <div class="names">
+        <span class="nm b">Betül</span>
+        <span class="ve">ve</span>
+        <span class="nm k">Burak</span>
+      </div>
+
+      <p class="invite-line">Nişanımıza davetlisiniz</p>
+      <div class="big-date">26.07.2026</div>
+      <div class="time">13.00</div>
+
+      <div class="divider"></div>
+
+      <div class="venue">Laura Event</div>
+      <p class="addr">Bağlıca, Etimesgut Blv. No:2<br>Etimesgut / Ankara</p>
+    </div>
+  </section>
+
+  <!-- ================= COUNTDOWN ================= -->
+  <section class="countdown">
+    <div class="grain"></div>
+    <p class="cd-head">Sizleri de aramızda görmekten<br>mutluluk duyarız</p>
+
+    <div class="timer" id="timer">
+      <div class="unit"><span class="num" id="d">000</span><span class="lbl">Gün</span></div>
+      <span class="sep">:</span>
+      <div class="unit"><span class="num" id="h">00</span><span class="lbl">Saat</span></div>
+      <span class="sep">:</span>
+      <div class="unit"><span class="num" id="m">00</span><span class="lbl">Dakika</span></div>
+      <span class="sep">:</span>
+      <div class="unit"><span class="num" id="s">00</span><span class="lbl">Saniye</span></div>
+    </div>
+
+    <a class="map-btn" href="https://share.google/gygglSs36PPP49oee" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      YOL TARİFİ AL
+    </a>
+    <p class="map-addr">Laura Event — Bağlıca, Etimesgut Blv. No:2 Etimesgut / Ankara</p>
+
+    <div class="foot-mono">Betül &amp; Burak</div>
+  </section>
+</div>
+
+<script>
+  // ---- open the envelope ----
+  var cover = document.getElementById('cover');
+  var seal  = document.getElementById('sealBtn');
+  function openInvite(){
+    if(document.body.classList.contains('opened')) return;
+    cover.classList.add('lift');
+    document.body.classList.add('opened');
+    window.scrollTo(0,0);
+    setTimeout(function(){ cover.style.display='none'; }, 1200);
+  }
+  seal.addEventListener('click', openInvite);
+  cover.addEventListener('click', openInvite);
+
+  // ---- countdown to 26.07.2026 13:00 ----
+  var target = new Date(2026, 6, 26, 13, 0, 0).getTime(); // month 6 = July
+  function pad(n, len){ n = String(n); while(n.length<len) n='0'+n; return n; }
+  function tick(){
+    var diff = target - new Date().getTime();
+    if(diff < 0) diff = 0;
+    var d = Math.floor(diff/86400000);
+    var h = Math.floor(diff%86400000/3600000);
+    var m = Math.floor(diff%3600000/60000);
+    var s = Math.floor(diff%60000/1000);
+    document.getElementById('d').textContent = pad(d,3);
+    document.getElementById('h').textContent = pad(h,2);
+    document.getElementById('m').textContent = pad(m,2);
+    document.getElementById('s').textContent = pad(s,2);
+  }
+  tick();
+  setInterval(tick,1000);
+</script>
+</body>
+</html>
